@@ -2,6 +2,7 @@ package com.polidea.reactnativeble.converter;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeArray;
 import com.polidea.multiplatformbleadapter.Characteristic;
 import com.polidea.multiplatformbleadapter.utils.Base64Converter;
 import com.polidea.multiplatformbleadapter.utils.UUIDConverter;
@@ -21,6 +22,7 @@ public class CharacteristicToJsObjectConverter extends JSObjectConverter<Charact
         String IS_NOTIFYING = "isNotifying";
         String IS_INDICATABLE = "isIndicatable";
         String VALUE = "value";
+        String MIDI_VALUE = "midi_value";
     }
 
     @Override
@@ -41,6 +43,20 @@ public class CharacteristicToJsObjectConverter extends JSObjectConverter<Charact
         js.putString(Metadata.VALUE,
                 characteristic.getValue() != null ?
                         Base64Converter.encode(characteristic.getValue()) : null);
+
+        WritableNativeArray midiDataReactArray = new WritableNativeArray();
+
+        if(characteristic.getValue() != null){
+            byte[] data = characteristic.getValue();
+            for(int i = 0; i < data.length; i++){
+              int unsignedInt = data[i] & 0xff;
+              midiDataReactArray.pushInt(unsignedInt);
+            }
+          }
+          
+          js.putArray(Metadata.MIDI_VALUE,
+          characteristic.getValue() != null ? midiDataReactArray : null); 
+
         return js;
     }
 }
