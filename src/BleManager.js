@@ -283,6 +283,9 @@ export class BleManager {
     const id = this._nextUniqueID()
     var wrappedSubscription: Subscription
 
+    console.log('Testing logging from BLEManager in custom version');
+
+
     if (emitCurrentState) {
       var cancelled = false
       this._callPromise(this.state()).then(currentState => {
@@ -448,6 +451,9 @@ export class BleManager {
    * @returns {Promise<Device>} Connected {@link Device} object if successful.
    */
   async connectToDevice(deviceIdentifier: DeviceId, options: ?ConnectionOptions): Promise<Device> {
+
+    console.log('BLEManager connectToDevice');
+
     const nativeDevice = await this._callPromise(BleModule.connectToDevice(deviceIdentifier, options))
     return new Device(nativeDevice, this)
   }
@@ -459,6 +465,9 @@ export class BleManager {
    * @returns {Promise<Device>} Returns closed {@link Device} when operation is successful.
    */
   async cancelDeviceConnection(deviceIdentifier: DeviceId): Promise<Device> {
+
+    console.log('BLEManager cancelDeviceConnection');
+
     const nativeDevice = await this._callPromise(BleModule.cancelDeviceConnection(deviceIdentifier))
     return new Device(nativeDevice, this)
   }
@@ -473,6 +482,9 @@ export class BleManager {
    * @returns {Subscription} Subscription on which `remove()` function can be called to unsubscribe.
    */
   onDeviceDisconnected(deviceIdentifier: DeviceId, listener: (error: ?BleError, device: Device) => void): Subscription {
+    
+    console.log('BLEManager onDeviceDisconnected');
+
     const disconnectionListener = ([error, nativeDevice]: [?string, NativeDevice]) => {
       if (deviceIdentifier !== nativeDevice.id) return
       listener(error ? parseBleError(error, this._errorCodesToMessagesMapping) : null, new Device(nativeDevice, this))
