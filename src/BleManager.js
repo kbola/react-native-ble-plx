@@ -406,10 +406,19 @@ export class BleManager {
    * @returns {Promise<Device>} Device with updated MTU size. Default value is 23.
    */
   async requestMTUForDevice(deviceIdentifier: DeviceId, mtu: number, transactionId: ?TransactionId): Promise<Device> {
+    
+    console.log("BleManager requestMTUForDevice");
+
     if (!transactionId) {
+
       transactionId = this._nextUniqueID()
+      console.log("BleManager no transaction id using: " + transactionId);
+
     }
     const nativeDevice = await this._callPromise(BleModule.requestMTUForDevice(deviceIdentifier, mtu, transactionId))
+    
+    console.log("BleManager requestMTU returned " + nativeDevice);
+
     return new Device(nativeDevice, this)
   }
 
